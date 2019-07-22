@@ -1,0 +1,6 @@
+.idea
+data
+data2
+*.egg-info
+*.pyc
+
