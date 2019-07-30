@@ -26,7 +26,7 @@ def runSeg(vtt_file, wav_file, out_dir):
         return
     wvdata = WavVttContainer(vtt_file, wav_file)
 
-    segments=SegmentationHandler.cutOnMaxSents(wvdata,args.sents_num)
+    segments=SegmentationHandler.cutOnMaxSents(wvdata,args.sents_num, args.words_num)
     folder= out_dir#wav_file[:wav_file.rfind("/")]+".seg"
     name=wav_file[1+wav_file.rfind("/"):wav_file.rfind(".")]
     os.makedirs(folder, exist_ok=True)
@@ -61,12 +61,14 @@ def segment_dir(vtt_dir, wav_dir, out_dir):
             runSeg(vtt_file= vtt_entry, wav_file= wav_entry, out_dir=out_entry)
 
 if __name__ == '__main__':
+
     parser=argparse.ArgumentParser()
     parser.add_argument("--vtt_dir", default="../data/")
     parser.add_argument("--wav_dir", default="../data/")
     parser.add_argument("--vtt_ext", default=".vtt")
 
-    parser.add_argument("--sents_num", default=60, type=int)
+    parser.add_argument("--sents_num", default=30, type=int)
+    parser.add_argument("--words_num", default=25, type=int)
 
     args=parser.parse_args()
 

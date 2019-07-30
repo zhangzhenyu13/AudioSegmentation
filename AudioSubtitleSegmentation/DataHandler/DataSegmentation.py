@@ -1,12 +1,13 @@
 from datetime import datetime
 from AudioSubtitleSegmentation.DataHandler.DataReader import WavVttContainer
 from AudioSubtitleSegmentation.TextNormailzation.normalize_transcription import TextNormalizer
+from textblob import TextBlob
 
 VIDEO_START_TIME = datetime.strptime('00:00:00.000', '%H:%M:%S.%f')
 
 class SegmentationHandler(object):
     @staticmethod
-    def cutOnMaxSents(wvdata:WavVttContainer, sents_num):
+    def cutOnMaxSents(wvdata:WavVttContainer, sents_num, words_count):
         results=[]
         blocks=[]
         sent=""
@@ -14,15 +15,17 @@ class SegmentationHandler(object):
         cache=[]
         segments=[]
         start, end, start_ms, end_ms=None, None, None, None
+
         for vtt in wvdata.vtt_list:
             cache.append(vtt)
             if sent=="":
                 start, start_ms=vtt["start"], vtt["start_ms"]
 
             sent+=vtt["text"]+" "
-            if TextNormalizer.endSent(vtt["text"]):
+            if TextNormalizer.endSent(vtt["text"]) or len(TextBlob(sent).words ) > words_count:
                 num+=1
                 sent+="\n"
+            
             if num>=sents_num:
                 end, end_ms=vtt["end"], vtt["end_ms"]
                 blocks.append(
